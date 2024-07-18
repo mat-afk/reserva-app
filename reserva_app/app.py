@@ -27,6 +27,11 @@ def reservas():
     return render_template("reservas.html")
 
 
+@app.route("/reservas/<id>")
+def detalhes_reserva():
+    return render_template("reserva/detalhes-reserva.html")
+
+
 @app.route("/salas")
 def salas():
     return render_template("listar-salas.html")
