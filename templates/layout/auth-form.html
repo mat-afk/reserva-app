@@ -1,0 +1,14 @@
+{% extends "layout/base.html" %} 
+
+{% block content %}
+  <div class="card position-absolute top-50 start-50 translate-middle w-75">
+    <div class="card-body">
+      <h5 class="card-title">
+          {% block form_title %}{% endblock %}
+      </h5>
+      <form class="card-text" action="/reservas" method="get">
+          {% block form_inputs %}{% endblock %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
