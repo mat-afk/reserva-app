@@ -1,16 +1,14 @@
 from reserva_app.domain.sala import Sala
-
-class Model:
-    def to_row():
-        return None
+from reserva_app.domain.model import Model
+from pathlib import Path
 
 class Repository:
 
-    DATABASE_PATH = "/database"
-    ID_OFFSET = 0
+    DATABASE_PATH = Path(__file__).parents[2] / "database/"
+    ID_OFFSET = 1
 
     def __init__(self, source_path):
-        self.file_path = self.DATABASE_PATH + source_path
+        self.file_path = self.DATABASE_PATH / source_path
 
     def list(self):
         with open(self.file_path) as file:
@@ -31,7 +29,7 @@ class Repository:
         return None
     
     def new_id(self):
-        return self.ID_OFFSET if not self.list() else self.convert_to_model(self.list()[-1]).id + 1
+        return self.ID_OFFSET if not self.list() else self.list()[-1].id + 1
 
 
 class SalaRepository(Repository):
@@ -44,4 +42,7 @@ class SalaRepository(Repository):
 
     def convert_to_model(self, row: str):
         id, capacidade, ativa, tipo, descricao = row.strip().split(",")
-        return Sala(id, capacidade, ativa, tipo, descricao)
+        return Sala(int(id), int(capacidade), ativa, tipo, descricao)
+
+
+salaRepository = SalaRepository()
