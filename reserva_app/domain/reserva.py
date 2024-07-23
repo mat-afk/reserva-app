@@ -1,6 +1,7 @@
 from datetime import datetime
+from reserva_app.domain.model import Model
 
-class Reserva:
+class Reserva(Model):
     def __init__(self, usuario_id, sala_id, inicio: datetime, fim: datetime, ativo):
         self.id = 0
         self.usuario_id = usuario_id
@@ -10,4 +11,4 @@ class Reserva:
         self.ativo = ativo
 
     def to_row(self):
-        return f"{self.id},{self.usuario_id},{self.sala_id},{self.inicio},{self.fim},{self.ativo}"
+        return f"{self.id},{self.usuario_id},{self.sala_id},{self.inicio},{self.fim},{self.ativo}\n"
