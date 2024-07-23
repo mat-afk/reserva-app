@@ -1,46 +1,47 @@
+from reserva_app.domain.sala import Sala
+
+class Model:
+    def to_row():
+        return None
+
 class Repository:
 
     DATABASE_PATH = "/database"
+    ID_OFFSET = 0
 
-    def _init_(self, source_path=""):
+    def __init__(self, source_path):
         self.file_path = self.DATABASE_PATH + source_path
 
     def list(self):
         with open(self.file_path) as file:
-            return [self.row_to_model(row) for row in file]
+            return [self.convert_to_model(row) for row in file]
 
-    def save(self, model):
+    def save(self, model: Model):
         with open(self.file_path, "a") as file:
-            row = self.model_to_row(model)
+            model.id = self.new_id()
+            row = model.to_row()
             file.write(row)
 
-    def model_to_row(self, model):
-        pass
+    def find_by_id(self, id: int):
+        for model in self.list():
+            if model.id == id:
+                return model
 
-    def row_to_model(self, row: str):
-        pass
-
-
-# Exemplo
-
-class Animal:
-    def _init_(self, nome, idade):
-        super()._init_()
-        self.nome = nome
-        self.idade = idade
+    def convert_to_model(self, row: str):
+        return None
+    
+    def new_id(self):
+        return self.ID_OFFSET if not self.list() else self.convert_to_model(self.list()[-1]).id + 1
 
 
-class AnimalRepository(Repository):
+class SalaRepository(Repository):
 
-    def _init_(self, source_path="animais.csv"):
-        super()._init_(source_path)
+    FILE_NAME = "salas.csv"
+    ID_OFFSET = 100
 
-    def model_to_row(self, model: Animal):
-        return f"{model.nome},{model.idade}"
+    def __init__(self):
+        super().__init__(self.FILE_NAME)
 
-    def row_to_model(self, row: str):
-        nome, idade = row.strip().split(",")
-        return Animal(nome, idade)
-
-
-repo = AnimalRepository()
+    def convert_to_model(self, row: str):
+        id, capacidade, ativa, tipo, descricao = row.strip().split(",")
+        return Sala(id, capacidade, ativa, tipo, descricao)

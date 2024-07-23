@@ -7,8 +7,8 @@ class SalaType(Enum):
 
 
 class Sala:
-    def __init__(self, id, capacidade, ativa, tipo: SalaType, descricao):
-        self.id = id
+    def __init__(self, capacidade, ativa, tipo: SalaType, descricao):
+        self.id = 0
         self.capacidade = capacidade
         self.ativa = ativa
         self.tipo = tipo
