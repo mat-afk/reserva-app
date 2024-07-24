@@ -55,7 +55,7 @@ def criar_sala():
     capacidade = request.form["capacidade"]
     descricao = request.form["descricao"]
 
-    sala = Sala(0, capacidade, True, SalaType(tipo), descricao)
+    sala = Sala(capacidade, SalaType(tipo), descricao)
 
     salaRepository.save(sala)
 
