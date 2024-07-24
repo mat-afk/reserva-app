@@ -8,7 +8,7 @@ class SalaType(Enum):
 
 
 class Sala(Model):
-    def __init__(self, id, capacidade, ativa, tipo: SalaType, descricao):
+    def __init__(self, capacidade: int, tipo: SalaType, descricao: str, id: int = None, ativa: bool = True):
         self.id = id
         self.capacidade = capacidade
         self.ativa = ativa

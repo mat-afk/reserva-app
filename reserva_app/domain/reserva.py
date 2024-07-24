@@ -2,8 +2,8 @@ from datetime import datetime
 from reserva_app.domain.model import Model
 
 class Reserva(Model):
-    def __init__(self, usuario_id, sala_id, inicio: datetime, fim: datetime, ativo):
-        self.id = 0
+    def __init__(self, usuario_id: int, sala_id: int, inicio: datetime, fim: datetime, id: int = None, ativo: bool = True):
+        self.id = id
         self.usuario_id = usuario_id
         self.sala_id = sala_id
         self.inicio = inicio
