@@ -14,7 +14,7 @@ class Repository:
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
     def list(self) -> list[Model]:
-        if self.file_path.exists():
+        if not self.file_path.exists():
             return []
         
         with open(self.file_path) as file:
@@ -39,7 +39,7 @@ class Repository:
     def convert_to_model(self, row: str) -> Model:
         return None
     
-    def str_to_bool(text: str) -> bool:
+    def str_to_bool(self, text: str) -> bool:
         return text.strip().lower() in ("true", "1")
     
     def new_id(self) -> int:
@@ -59,7 +59,7 @@ class SalaRepository(Repository):
         id, capacidade, ativa, tipo, descricao = row.strip().split(",")
 
         capacidade = int(capacidade)
-        tipo = SalaType(tipo)
+        tipo = SalaType(int(tipo))
         id = int(id)
         ativa = self.str_to_bool(ativa)
         

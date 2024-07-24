@@ -36,7 +36,7 @@ def detalhes_reserva():
 
 @app.route("/salas")
 def salas():
-    return render_template("listar-salas.html")
+    return render_template("listar-salas.html", salas=salaRepository.list())
 
 
 @app.route("/salas/reservar")
@@ -46,7 +46,7 @@ def reservar_sala():
 
 @app.route("/salas/cadastrar")
 def cadastrar_sala():
-    return render_template("cadastrar-sala.html")
+    return render_template("cadastrar-sala.html", tipos=SalaType)
 
    
 @app.route("/salas/cadastrar", methods=["POST"])

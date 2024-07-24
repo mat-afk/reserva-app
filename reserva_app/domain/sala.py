@@ -6,6 +6,13 @@ class SalaType(Enum):
     LAB_QUI = 2
     SALA_AULA = 3
 
+    def __str__(self):
+        return {
+            SalaType.LAB_INF: "Laboratório de Informática",
+            SalaType.LAB_QUI: "Laboratório de Química",
+            SalaType.SALA_AULA: "Sala de Aula"
+        }[self]
+
 
 class Sala(Model):
     def __init__(self, capacidade: int, tipo: SalaType, descricao: str, id: int = None, ativa: bool = True):
@@ -16,4 +23,4 @@ class Sala(Model):
         self.descricao = descricao
 
     def to_row(self):
-        return f"{self.id},{self.capacidade},{self.ativa},{self.tipo},{self.descricao}\n"
+        return f"{self.id},{self.capacidade},{self.ativa},{self.tipo.value},{self.descricao}\n"
