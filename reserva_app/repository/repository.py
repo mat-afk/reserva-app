@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Repository:
 
-    DATABASE_PATH = Path(__file__).parents[2] / "database/"
+    DATABASE_PATH = Path(__file__).parents[2] / "database"
     ID_OFFSET = 1
 
     def __init__(self, source_path: str):
@@ -31,6 +31,9 @@ class Repository:
     def convert_to_model(self, row: str) -> Model:
         return None
     
+    def str_to_bool(text: str) -> bool:
+        return text.strip().lower() in ("true", "1")
+    
     def new_id(self) -> int:
         return self.ID_OFFSET if not self.list() else self.list()[-1].id + 1
 
@@ -45,13 +48,18 @@ class SalaRepository(Repository):
 
     def convert_to_model(self, row: str) -> Model:
         id, capacidade, ativa, tipo, descricao = row.strip().split(",")
+
+        capacidade = int(capacidade)
+        tipo = SalaType(tipo)
+        id = int(id)
+        ativa = self.str_to_bool(ativa)
         
         return Sala( 
-            int(capacidade),
-            SalaType(tipo), 
+            capacidade,
+            tipo, 
             descricao,
-            id=int(id),
-            ativa=bool(ativa),
+            id=id,
+            ativa=ativa,
         )
 
 
