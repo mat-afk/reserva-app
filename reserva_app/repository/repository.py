@@ -1,5 +1,6 @@
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.model import Model
+import re
 from pathlib import Path
 
 class Repository:
@@ -39,6 +40,33 @@ class Repository:
     def convert_to_model(self, row: str) -> Model:
         return None
     
+    def split_fields(self, row: str) -> list[str]:
+        fields = []
+        current = []
+        in_quotes = False
+
+        i = 0
+        while i < len(row):
+            char = row[i]
+
+            if char == '"':
+                in_quotes = not in_quotes
+            elif char == ',' and not in_quotes:
+                fields.append(''.join(current).strip())
+                current = []
+            else:
+                current.append(char)
+
+            i += 1
+
+        fields.append(''.join(current).strip())
+
+        for i in range(len(fields)):
+            if fields[i].startswith('"') and fields[i].endswith('"'):
+                fields[i] = fields[i][1:-1].replace('""', '"')
+
+        return fields
+    
     def str_to_bool(self, text: str) -> bool:
         return text.strip().lower() in ("true", "1")
     
@@ -56,7 +84,7 @@ class SalaRepository(Repository):
         super().__init__(self.FILE_NAME)
 
     def convert_to_model(self, row: str) -> Model:
-        id, capacidade, ativa, tipo, descricao = row.strip().split(",")
+        id, capacidade, ativa, tipo, descricao = self.split_fields(row)
 
         capacidade = int(capacidade)
         tipo = SalaType(int(tipo))
