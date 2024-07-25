@@ -37,6 +37,21 @@ class Repository:
             
         return None
 
+    def delete(self, id: int):
+        if not self.file_path.exists(): return
+        
+        remaining_rows = []
+
+        with open(self.file_path, "r") as file:
+            for row in file:
+                fields = row.strip().split(",")
+
+                if int(id) != int(fields[0]):
+                    remaining_rows.append(row)
+
+        with open(self.file_path, "w") as file:
+            file.writelines(remaining_rows)
+                    
     def convert_to_model(self, row: str) -> Model:
         return None
     

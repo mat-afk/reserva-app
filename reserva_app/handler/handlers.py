@@ -36,3 +36,6 @@ def handle_cadastrar_sala(request):
     sala = Sala(capacidade, tipo, descricao)
 
     salaRepository.save(sala)
+
+def handle_excluir_sala(id: int):
+    salaRepository.delete(id)

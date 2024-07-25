@@ -42,7 +42,7 @@
                       {% endif %}
                     </td>
                     <td>
-                      <form action="">
+                      <form>
                         <button
                           class="btn btn-sm btn-dark"
                           type="submit"
@@ -60,7 +60,8 @@
                         <button
                           class="btn btn-sm btn-dark"
                           type="submit"
-                          formaction="/reservas"
+                          formaction="/salas/{{ sala.id }}/excluir"
+                          formmethod="POST"
                         >
                           Excluir
                         </button>

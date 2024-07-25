@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
-from reserva_app.handler.handlers import get_salas, get_sala_types, handle_cadastrar_sala
+from reserva_app.handler.handlers import get_salas, get_sala_types, handle_cadastrar_sala, handle_excluir_sala
 
 app = Flask(__name__, template_folder="../templates")
 
@@ -55,3 +55,9 @@ def cadastrar_sala():
             return render_template("cadastrar-sala.html", tipos=get_sala_types(), errors=errors)
         
         return redirect(url_for("salas"))
+    
+
+@app.route("/salas/<id>/excluir", methods=["POST"])
+def excluir_sala(id):
+    handle_excluir_sala(id)
+    return redirect(url_for("salas"))
