@@ -14,13 +14,6 @@ class Repository:
         if not self.file_path.parent.exists():
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def find_all(self) -> list[Model]:
-        if not self.file_path.exists():
-            return []
-        
-        with open(self.file_path) as file:
-            return [self.convert_to_model(row) for row in file]
-
     def save(self, model: Model) -> int:
         model.id = self.new_id()
         row = model.to_row()
@@ -29,6 +22,13 @@ class Repository:
             file.write(row)
 
         return model.id
+
+    def find_all(self) -> list[Model]:
+        if not self.file_path.exists():
+            return []
+        
+        with open(self.file_path) as file:
+            return [self.convert_to_model(row) for row in file]
 
     def find_by_id(self, id: int) -> Model:
         for model in self.find_all():

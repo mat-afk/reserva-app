@@ -49,5 +49,9 @@ def cadastrar_sala():
         return render_template("cadastrar-sala.html", tipos=get_sala_types())
     
     if request.method == "POST":
-        handle_cadastrar_sala(request)
+        errors = handle_cadastrar_sala(request)
+
+        if errors:
+            return render_template("cadastrar-sala.html", tipos=get_sala_types(), errors=errors)
+        
         return redirect(url_for("salas"))

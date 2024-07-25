@@ -13,9 +13,19 @@
     </div>
     <div>
       <div class="col">
+        {% if errors %}
+          {% for error in errors %}
+            <div class="alert alert-danger" role="alert">
+              {{ error }}
+            </div>
+          {% endfor %}
+        {% endif %}
         <form action="/salas/cadastrar" method="POST">
           <div class="mb-3">
-            <label for="tipo" class="form-label">Tipo</label>
+            <label for="tipo" class="form-label">
+              Tipo 
+              <span class="text-danger">*</span>
+            </label>
             <select class="form-select" id="tipo" name="tipo">
               <option selected>Selecione um tipo</option>
               {% for tipo in tipos %}
@@ -24,7 +34,10 @@
             </select>
           </div>
           <div class="mb-3">
-            <label for="capacidade" class="form-label">Capacidade</label>
+            <label for="capacidade" class="form-label">
+              Capacidade
+              <span class="text-danger">*</span>
+            </label>
             <input
               type="number"
               class="form-control"
