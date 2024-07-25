@@ -53,7 +53,8 @@
                         <button
                           class="btn btn-sm btn-dark"
                           type="submit"
-                          formaction="/reservas"
+                          formaction="/salas/{{ sala.id }}/desativar"
+                          formmethod="POST"
                         >
                           Desativar
                         </button>

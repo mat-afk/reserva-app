@@ -37,5 +37,10 @@ def handle_cadastrar_sala(request):
 
     salaRepository.save(sala)
 
+def handle_desativar_sala(id: int):
+    sala: Sala = salaRepository.find_by_id(id)
+    sala.ativa = False
+    salaRepository.update(id, sala)
+
 def handle_excluir_sala(id: int):
     salaRepository.delete(id)

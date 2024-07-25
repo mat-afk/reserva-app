@@ -35,6 +35,23 @@ class Repository:
                 return model
             
         return None
+    
+    def update(self, id: int, model: Model):
+        if not self.file_path.exists(): return
+
+        rows = []
+
+        with open(self.file_path, "r") as file:
+            for row in file:
+                fields = row.strip().split(",")
+
+                if id == int(fields[0]):
+                    rows.append(model.to_row())
+                else:
+                    rows.append(row)
+
+        with open(self.file_path, "w") as file:
+            file.writelines(rows)
 
     def delete(self, id: int):
         if not self.file_path.exists(): return
@@ -45,7 +62,7 @@ class Repository:
             for row in file:
                 fields = row.strip().split(",")
 
-                if int(id) != int(fields[0]):
+                if id != int(fields[0]):
                     remaining_rows.append(row)
 
         with open(self.file_path, "w") as file:
