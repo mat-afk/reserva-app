@@ -1,6 +1,5 @@
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.model import Model
-import re
 from pathlib import Path
 
 class Repository:
