@@ -14,7 +14,7 @@ class Repository:
         if not self.file_path.parent.exists():
             self.file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def list(self) -> list[Model]:
+    def find_all(self) -> list[Model]:
         if not self.file_path.exists():
             return []
         
@@ -31,7 +31,7 @@ class Repository:
         return model.id
 
     def find_by_id(self, id: int) -> Model:
-        for model in self.list():
+        for model in self.find_all():
             if model.id == id:
                 return model
             
@@ -71,7 +71,7 @@ class Repository:
         return text.strip().lower() in ("true", "1")
     
     def new_id(self) -> int:
-        models = self.list()
+        models = self.find_all()
         return self.ID_OFFSET if not models else models[-1].id + 1
 
 
