@@ -6,9 +6,7 @@
       <h5 class="card-title">
           {% block form_title %}{% endblock %}
       </h5>
-      <form class="card-text" action="/reservas" method="get">
-          {% block form_inputs %}{% endblock %}
-      </form>
+      {% block form %}{% endblock %}
     </div>
   </div>
 {% endblock %}

@@ -4,25 +4,27 @@
 
 {% block form_title %}Cadastro{% endblock %}
 
-{% block form_inputs %}
-  <div class="mb-3">
-    <label for="nome" class="form-label">Nome</label>
-    <input type="email" class="form-control" name="nome" id="nome" />
-  </div>
-  <div class="mb-3">
-    <label for="email" class="form-label">E-mail</label>
-    <input type="email" class="form-control" name="email" id="email" />
-  </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Senha</label>
-    <input
-      type="password"
-      class="form-control"
-      name="password"
-      id="password"
-    />
-  </div>
-  <div class="mb-3">
-    <button type="submit" class="btn btn-dark">Cadastrar</button>
-  </div>
+{% block form %}
+  <form class="card-text" action="/cadastro" method="POST">
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome</label>
+      <input type="text" class="form-control" name="nome" id="nome" />
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">E-mail</label>
+      <input type="email" class="form-control" name="email" id="email" />
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Senha</label>
+      <input
+        type="password"
+        class="form-control"
+        name="password"
+        id="password"
+      />
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-dark">Cadastrar</button>
+    </div>
+  </form>
 {% endblock %}
