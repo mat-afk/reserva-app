@@ -1,3 +1,4 @@
+from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.model import Model
 from pathlib import Path
@@ -104,6 +105,30 @@ class Repository:
     def new_id(self) -> int:
         models = self.find_all()
         return self.ID_OFFSET if not models else models[-1].id + 1
+    
+
+class UsuarioRepository(Repository):
+
+    FILE_NAME = "usuarios.csv"
+
+    def __init__(self):
+        super().__init__(self.FILE_NAME)
+
+    def find_by_email(self, email:str) -> Model:
+        for model in self.find_all():
+            if model.email == email:
+                return model
+            
+        return None
+
+    def convert_to_model(self, row: str) -> Model:
+        id, nome, email, senha, ativo, admin = row.strip().split(",")
+
+        id = int(id)
+        ativo = self.str_to_bool(ativo)
+        admin = self.str_to_bool(admin)
+
+        return Usuario(nome, email, senha, id=id, ativo=ativo, admin=admin)
 
 
 class SalaRepository(Repository):
@@ -124,5 +149,7 @@ class SalaRepository(Repository):
         
         return Sala(capacidade, tipo, descricao, id=id, ativa=ativa)
 
+
+usuarioRepositoy = UsuarioRepository()
 
 salaRepository = SalaRepository()
