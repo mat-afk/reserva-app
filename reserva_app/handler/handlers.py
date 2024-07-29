@@ -64,6 +64,27 @@ def handle_cadastrar_sala(request):
     capacidade = request.form["capacidade"]
     descricao = request.form["descricao"]
 
+    inputs = { "tipo": tipo, "capacidade": capacidade, "descricao": descricao }
+
+    errors = validate_cadastrar_sala(inputs)
+
+    if errors:
+        inputs["tipo"] = int(tipo)
+        return errors, inputs
+    
+    tipo = SalaType(int(tipo))
+    descricao = '"' + descricao + '"'
+
+    sala = Sala(capacidade, tipo, descricao)
+
+    salaRepository.save(sala)
+
+    return None, None
+
+def validate_cadastrar_sala(inputs):
+    tipo = inputs["tipo"]
+    capacidade = inputs["capacidade"]
+
     errors = []
 
     if not tipo or not capacidade:
@@ -76,15 +97,7 @@ def handle_cadastrar_sala(request):
     if capacidade <= 0:
         errors.append("A capacidade deve ser maior que 0.")
 
-    if errors:
-        return errors
-    
-    tipo = SalaType(int(tipo))
-    descricao = '"' + descricao + '"'
-
-    sala = Sala(capacidade, tipo, descricao)
-
-    salaRepository.save(sala)
+    return errors
 
 def handle_desativar_sala(id: int):
     sala: Sala = salaRepository.find_by_id(id)

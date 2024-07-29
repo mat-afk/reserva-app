@@ -29,7 +29,11 @@
             <select class="form-select" id="tipo" name="tipo">
               <option selected>Selecione um tipo</option>
               {% for tipo in tipos %}
-                <option value="{{ tipo.value }}">{{ tipo }}</option>
+                {% if tipo.value == inputs.tipo %}
+                  <option value="{{ tipo.value }}" selected>{{ tipo }}</option>
+                {% else %}
+                  <option value="{{ tipo.value }}">{{ tipo }}</option>
+                {% endif %}
               {% endfor %}
             </select>
           </div>
@@ -43,6 +47,7 @@
               class="form-control"
               name="capacidade"
               id="capacidade"
+              value="{{ inputs.capacidade }}"
             />
           </div>
           <div class="mb-3">
@@ -53,7 +58,7 @@
               id="descricao"
               cols="30"
               rows="10"
-            ></textarea>
+            >{{ inputs.descricao }}</textarea>
           </div>
           <button type="submit" class="btn btn-dark">Cadastrar</button>
         </form>

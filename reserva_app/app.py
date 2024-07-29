@@ -55,13 +55,13 @@ def reservar_sala():
 @app.route("/salas/cadastrar", methods=["GET", "POST"])
 def cadastrar_sala():
     if request.method == "GET":
-        return render_template("cadastrar-sala.html", tipos=handlers.get_sala_types())
+        return render_template("cadastrar-sala.html", tipos=handlers.get_sala_types(), inputs={})
     
     if request.method == "POST":
-        errors = handlers.handle_cadastrar_sala(request)
+        errors, inputs = handlers.handle_cadastrar_sala(request)
 
         if errors:
-            return render_template("cadastrar-sala.html", tipos=handlers.get_sala_types(), errors=errors)
+            return render_template("cadastrar-sala.html", tipos=handlers.get_sala_types(), errors=errors, inputs=inputs)
         
         return redirect(url_for("salas"))
     
