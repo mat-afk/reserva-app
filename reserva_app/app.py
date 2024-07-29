@@ -18,9 +18,18 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/cadastro")
+@app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
-    return render_template("cadastro.html")
+    if request.method == "GET":
+        return render_template("cadastro.html", inputs={})
+    
+    if request.method == "POST":
+        errors, inputs = handlers.handle_cadastro(request)
+
+        if errors:
+            return render_template("cadastro.html", errors=errors, inputs=inputs)
+
+        return redirect(url_for("reservas"))
 
 
 @app.route("/reservas")

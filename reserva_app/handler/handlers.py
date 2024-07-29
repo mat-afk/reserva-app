@@ -1,5 +1,54 @@
+import bcrypt
+import re
+
+from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
-from reserva_app.repository.repository import salaRepository
+from reserva_app.repository.repository import salaRepository, usuarioRepositoy
+
+def handle_cadastro(request):
+    nome = request.form["nome"]
+    email = request.form["email"]
+    senha = request.form["password"]
+
+    inputs = { "nome": nome, "email": email, "senha": senha }
+
+    errors = validate_cadastro(inputs)
+
+    if errors:
+        return errors, inputs
+    
+    senha = bcrypt.hashpw(bytes(senha, encoding="UTF-8"), bcrypt.gensalt())
+
+    usuario = Usuario(nome, email, senha)
+
+    usuarioRepositoy.save(usuario)
+
+    return None, None
+
+def validate_cadastro(inputs):
+    nome = inputs["nome"]
+    email = inputs["email"]
+    senha =  inputs["senha"]
+
+    errors = []
+
+    if not nome or not email or not senha:
+        return ["Por favor, preencha todos os campos obrigatórios."]
+
+    if re.match(r".*[^a-zA-Z0-9].*", nome):
+        errors.append("O nome não pode ter caracteres especiais.")
+    
+    if not re.match(r"^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$", email):
+        errors.append("Insira um e-mail válido.")
+
+    MIN_LENGHT = 6
+    if len(senha) < MIN_LENGHT:
+        errors.append(f"A senha deve ter, no mínimo, {MIN_LENGHT} caracteres.")
+
+    if usuarioRepositoy.find_by_email(email):
+        errors.append("Email indisponível.")
+
+    return errors
 
 def get_salas():
     return salaRepository.find_all()
