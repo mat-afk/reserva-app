@@ -5,6 +5,35 @@ from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.repository.repository import salaRepository, usuarioRepositoy
 
+def handle_login(request):
+    email = request.form["email"]
+    senha = request.form["password"]
+
+    inputs = { "email": email, "senha": senha }
+
+    errors = validate_login(inputs)
+
+    if errors:
+        return errors, inputs
+
+    return None, None
+
+def validate_login(inputs):
+    email = inputs["email"]
+    senha = inputs["senha"]
+
+    if not email or not senha:
+        return ["Por favor, preencha todos os campos."]
+    
+    if not is_email_valid(email):
+        return ["Insira um e-mail válido."]
+
+    usuario = usuarioRepositoy.find_by_email(email)
+    if not usuario or not check(senha, usuario.senha):
+        return ["E-mail ou senha incorretos."]
+
+    return None
+
 def handle_cadastro(request):
     nome = request.form["nome"]
     email = request.form["email"]
@@ -17,7 +46,7 @@ def handle_cadastro(request):
     if errors:
         return errors, inputs
     
-    senha = bcrypt.hashpw(bytes(senha, encoding="UTF-8"), bcrypt.gensalt())
+    senha = hash(senha)
 
     usuario = Usuario(nome, email, senha)
 
@@ -38,7 +67,7 @@ def validate_cadastro(inputs):
     if re.match(r".*[^a-zA-Z0-9].*", nome):
         errors.append("O nome não pode ter caracteres especiais.")
     
-    if not re.match(r"^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$", email):
+    if not is_email_valid(email):
         errors.append("Insira um e-mail válido.")
 
     MIN_LENGHT = 6
@@ -49,6 +78,15 @@ def validate_cadastro(inputs):
         errors.append("Email indisponível.")
 
     return errors
+
+def hash(senha: str):
+    return bcrypt.hashpw(senha.encode(), bcrypt.gensalt()).decode()
+
+def check(senha: str, hashed: str):
+    return bcrypt.checkpw(senha.encode(), hashed.encode())
+
+def is_email_valid(email):
+    return re.match(r"^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$", email)
 
 def get_salas():
     return salaRepository.find_all()

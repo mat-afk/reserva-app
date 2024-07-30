@@ -13,9 +13,18 @@ def index():
     return redirect(url_for("reservas"))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == "GET":
+        return render_template("login.html", inputs={})
+    
+    if request.method == "POST":
+        errors, inputs = handlers.handle_login(request)
+
+        if errors:
+            return render_template("login.html", errors=errors, inputs=inputs)
+
+        return redirect(url_for("reservas"))
 
 
 @app.route("/cadastro", methods=["GET", "POST"])
