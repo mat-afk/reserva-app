@@ -3,6 +3,8 @@ import re
 
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
+from reserva_app.domain.error import Error
+from reserva_app.domain.constants import PASSWORD_MIN_LENGHT
 from reserva_app.repository.repository import salaRepository, usuarioRepositoy
 
 def handle_login(request):
@@ -23,14 +25,14 @@ def validate_login(inputs):
     senha = inputs["senha"]
 
     if not email or not senha:
-        return ["Por favor, preencha todos os campos."]
+        return [Error.BlankCredentials]
     
     if not is_email_valid(email):
-        return ["Insira um e-mail válido."]
+        return [Error.InvalidEmail]
 
     usuario = usuarioRepositoy.find_by_email(email)
     if not usuario or not check(senha, usuario.senha):
-        return ["E-mail ou senha incorretos."]
+        return [Error.BadCredentials]
 
     return None
 
@@ -62,20 +64,19 @@ def validate_cadastro(inputs):
     errors = []
 
     if not nome or not email or not senha:
-        return ["Por favor, preencha todos os campos obrigatórios."]
+        return [Error.BlankCredentials]
 
     if re.match(r".*[^a-zA-Z0-9].*", nome):
-        errors.append("O nome não pode ter caracteres especiais.")
+        errors.append(Error.NameSpecialCharacters)
     
     if not is_email_valid(email):
-        errors.append("Insira um e-mail válido.")
+        errors.append(Error.InvalidEmail)
 
-    MIN_LENGHT = 6
-    if len(senha) < MIN_LENGHT:
-        errors.append(f"A senha deve ter, no mínimo, {MIN_LENGHT} caracteres.")
+    if len(senha) < PASSWORD_MIN_LENGHT:
+        errors.append(Error.PasswordMinimumLength)
 
     if usuarioRepositoy.find_by_email(email):
-        errors.append("Email indisponível.")
+        errors.append(Error.UnavailableEmail)
 
     return errors
 
@@ -126,14 +127,14 @@ def validate_cadastrar_sala(inputs):
     errors = []
 
     if not tipo or not capacidade:
-        return ["Por favor, preencha todos os campos obrigatórios."]
+        return [Error.BlankCredentials]
     
     if tipo not in str(get_sala_types_values()):
-        errors.append("Selecione um tipo válido.")
+        errors.append(Error.InvalidSalaType)
     
     capacidade = int(capacidade)
     if capacidade <= 0:
-        errors.append("A capacidade deve ser maior que 0.")
+        errors.append(Error.ZeroCapacity)
 
     return errors
 
