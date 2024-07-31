@@ -53,9 +53,15 @@ def reservas():
 
 
 @app.route("/reservas/<id>")
-def detalhes_reserva():
-    return render_template("reserva/detalhes-reserva.html")
+def detalhes_reserva(id):
+    reserva = get_reserva_by_id(id)
+    return render_template("reserva/detalhes-reserva.html", reserva=reserva)
 
+
+@app.route("/reservas/<id>/cancelar", methods=["POST"])
+def cancelar_reserva(id):
+    handle_cancelar_reserva(id)
+    return redirect(url_for("reservas"))
 
 @app.route("/salas")
 def salas():
@@ -64,7 +70,7 @@ def salas():
 
 @app.route("/salas/reservar", methods=["GET", "POST"])
 def reservar_sala():
-    salas = get_salas()
+    salas = get_salas_ativas()
 
     if request.method == "GET":
         return render_template("reservar-sala.html", salas=salas, inputs={})

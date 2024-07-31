@@ -1,19 +1,18 @@
-{% extends "../layout/header.html" %} 
+{% extends "layout/header.html" %} 
 
 {% block title %}
   Reserva
 {% endblock %}
 
 {% block main %}
-
   <div class="container">
     <div class="row mt-4">
       <div class="col">
-        <h1>Reserva 832</h1>
-        <p><b>Sala:</b> 3</p>
-        <p><b>Início:</b> 30/04/2024 - 14:00</p>
-        <p><b>Fim:</b> 30/04/2024 - 16:30</p>
-        <p>Reservado para Nome do Professor</p>
+        <h1>Reserva {{ reserva.id }}</h1>
+        <p><b>Sala:</b> {{ reserva.sala.id }}</p>
+        <p><b>Início:</b> {{ reserva.date() }} - {{ reserva.time_inicio() }}</p>
+        <p><b>Fim:</b> {{ reserva.date() }} - {{ reserva.time_fim() }}</p>
+        <p>Reservado para {{ reserva.usuario.nome }}.</p>
       </div>
     </div>
     <div class="row">
@@ -27,11 +26,10 @@
         <p>
           Você pode cancelar a reserva até 12 horas antes do início da reserva.
         </p>
-        <form action="">
+        <form action="/reservas/{{ reserva.id }}/cancelar" method="POST">
           <button class="btn btn-dark">Cancelar Reserva</button>
         </form>
       </div>
     </div>
   </div>
-
 {% endblock %}

@@ -8,6 +8,9 @@ from reserva_app.handler.auth_handlers import get_user_cookie
 def get_salas():
     return salaRepository.find_all()
 
+def get_salas_ativas():
+    return [sala for sala in get_salas() if sala.ativa]
+
 def get_sala_types():
     return SalaType
 
@@ -16,6 +19,9 @@ def get_sala_types_values():
 
 def get_reservas():
     return reservaRepository.find_all()
+
+def get_reserva_by_id(id):
+    return reservaRepository.find_by_id(int(id))
 
 def handle_reservar_sala(request):
     sala_id = request.form["sala"]
@@ -73,13 +79,19 @@ def validate_reservar_sala(inputs):
     if fim.date() > inicio.date():
         return [Error.ReservaTooLong]
 
-    reservas: list[Reserva] = reservaRepository.find_by_sala(sala_id)
+    reservas: list[Reserva] = [reserva for reserva in reservaRepository.find_by_sala(sala_id) if reserva.ativa]
 
     for reserva in reservas:
         if reserva.inicio < fim and reserva.fim > inicio:
             reservaStart = reserva.inicio.time().strftime("%H:%M")
             reservaEnd = reserva.fim.time().strftime("%H:%M")
             return [str(Error.SalaAlreadyInUse) + f" Essa sala já foi reservada das {reservaStart} às {reservaEnd}."]
+        
+def handle_cancelar_reserva(id):
+    id = int(id)
+    reserva = reservaRepository.find_by_id(id)
+    reserva.ativa = False
+    reservaRepository.update(id, reserva)
         
 def handle_cadastrar_sala(request):
     tipo = request.form["tipo"]
