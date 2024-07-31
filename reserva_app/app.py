@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from reserva_app.handler.auth_handlers import handle_login, handle_cadastro
 from reserva_app.handler.sala_handlers import *
+from reserva_app.handler.reserva_handlers import get_reservas
 
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = "secret_key"
@@ -45,7 +46,7 @@ def cadastro():
 
 @app.route("/reservas")
 def reservas():
-    return render_template("reservas.html")
+    return render_template("reservas.html", reservas=get_reservas())
 
 
 @app.route("/reservas/<id>")

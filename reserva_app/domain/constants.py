@@ -1,1 +1,4 @@
 PASSWORD_MIN_LENGHT = 6
+DATETIME_FORMAT = "%d/%m/%Y %H:%M"
+DATE_FORMAT = "%d/%m/%Y"
+TIME_FORMAT = "%H:%M"

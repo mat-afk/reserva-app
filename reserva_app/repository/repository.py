@@ -2,6 +2,7 @@ from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.reserva import Reserva
 from reserva_app.domain.model import Model
+from reserva_app.domain.constants import DATETIME_FORMAT
 from datetime import datetime
 from pathlib import Path
 
@@ -168,8 +169,8 @@ class ReservaRepository(Repository):
         id = int(id)
         sala = salaRepository.find_by_id(int(sala_id))
         usuario = usuarioRepositoy.find_by_id(int(usuario_id))
-        inicio = datetime.strptime(inicio, "%Y-%m-%d %H:%M:%S")
-        fim = datetime.strptime(fim, "%Y-%m-%d %H:%M:%S")
+        inicio = datetime.strptime(inicio, DATETIME_FORMAT)
+        fim = datetime.strptime(fim, DATETIME_FORMAT)
         ativa = self.str_to_bool(ativa)
         
         return Reserva(sala, usuario, inicio, fim, id=id, ativa=ativa)
