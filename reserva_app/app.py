@@ -5,11 +5,17 @@ from reserva_app.handler.handlers import *
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = "secret_key"
 
-@app.route("/")
-def index():
+def redirect_logged_in():
     if not get_user_cookie():
         return redirect(url_for("login"))
-        
+    return None
+
+@app.route("/")
+def index():
+    response = redirect_logged_in()
+    if response:
+        return response
+
     return redirect(url_for("reservas"))
 
 
@@ -49,6 +55,10 @@ def logout():
 
 @app.route("/reservas")
 def reservas():
+    response = redirect_logged_in()
+    if response:
+        return response
+    
     if not request.args:
         return render_template("reservas.html", reservas=get_reservas())
     
@@ -70,11 +80,19 @@ def cancelar_reserva(id):
 
 @app.route("/salas")
 def salas():
+    response = redirect_logged_in()
+    if response:
+        return response
+    
     return render_template("listar-salas.html", salas=get_salas())
 
 
 @app.route("/salas/reservar", methods=["GET", "POST"])
 def reservar_sala():
+    response = redirect_logged_in()
+    if response:
+        return response
+    
     salas = get_salas_ativas()
 
     if request.method == "GET":
@@ -91,6 +109,10 @@ def reservar_sala():
 
 @app.route("/salas/cadastrar", methods=["GET", "POST"])
 def cadastrar_sala():
+    response = redirect_logged_in()
+    if response:
+        return response
+    
     if request.method == "GET":
         return render_template("cadastrar-sala.html", tipos=get_sala_types(), inputs={})
     
