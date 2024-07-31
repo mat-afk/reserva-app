@@ -5,14 +5,14 @@ from reserva_app.handler.handlers import *
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = "secret_key"
 
-def redirect_logged_in():
+def login_required():
     if not get_user_cookie():
         return redirect(url_for("login"))
     return None
 
 @app.route("/")
 def index():
-    response = redirect_logged_in()
+    response = login_required()
     if response:
         return response
 
@@ -55,7 +55,7 @@ def logout():
 
 @app.route("/reservas")
 def reservas():
-    response = redirect_logged_in()
+    response = login_required()
     if response:
         return response
     
@@ -80,7 +80,7 @@ def cancelar_reserva(id):
 
 @app.route("/salas")
 def salas():
-    response = redirect_logged_in()
+    response = login_required()
     if response:
         return response
     
@@ -89,7 +89,7 @@ def salas():
 
 @app.route("/salas/reservar", methods=["GET", "POST"])
 def reservar_sala():
-    response = redirect_logged_in()
+    response = login_required()
     if response:
         return response
     
@@ -109,7 +109,7 @@ def reservar_sala():
 
 @app.route("/salas/cadastrar", methods=["GET", "POST"])
 def cadastrar_sala():
-    response = redirect_logged_in()
+    response = login_required()
     if response:
         return response
     
