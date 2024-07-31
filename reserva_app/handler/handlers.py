@@ -1,4 +1,5 @@
 from datetime import datetime
+from reserva_app.domain.constants import DEFAULT_DATETIME_FORMAT, DEFAULT_DATE_FORMAT
 from reserva_app.domain.reserva import Reserva
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.error import Error
@@ -23,6 +24,40 @@ def get_reservas():
 def get_reserva_by_id(id):
     return reservaRepository.find_by_id(int(id))
 
+def filter_reservas(request):
+    id = request.args.get("id")
+    sala_id = request.args.get("sala")
+    data = request.args.get("data")
+    ativa = request.args.get("ativa")
+
+    reservas: list[Reserva] = get_reservas()
+
+    if not id and not sala_id and not data and not ativa:
+        return reservas
+    
+    filtered_reservas = []
+
+    for reserva in reservas:
+        if id and reserva.id != int(id):
+            continue
+
+        if sala_id and reserva.sala.id != int(sala_id):
+            continue
+
+        if data:
+            reserva_date_str = reserva.inicio.strftime(DEFAULT_DATE_FORMAT)
+            if reserva_date_str != data:
+                continue
+
+        if ativa:
+            is_ativa = ativa.lower() in ("true", "yes", "y", "sim", "s")
+            if reserva.ativa != is_ativa:
+                continue
+
+        filtered_reservas.append(reserva)
+
+    return filtered_reservas
+
 def handle_reservar_sala(request):
     sala_id = request.form["sala"]
     inicio = request.form["inicio"]
@@ -34,8 +69,8 @@ def handle_reservar_sala(request):
     if not sala_id or not inicio or not fim:
         return [Error.BlankFields], inputs
 
-    inicio = datetime.strptime(inicio, "%Y-%m-%dT%H:%M")
-    fim = datetime.strptime(fim, "%Y-%m-%dT%H:%M")
+    inicio = datetime.strptime(inicio, DEFAULT_DATETIME_FORMAT)
+    fim = datetime.strptime(fim, DEFAULT_DATETIME_FORMAT)
 
     inputs["inicio"] = inicio
     inputs["fim"] = fim

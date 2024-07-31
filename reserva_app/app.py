@@ -49,7 +49,11 @@ def logout():
 
 @app.route("/reservas")
 def reservas():
-    return render_template("reservas.html", reservas=get_reservas())
+    if not request.args:
+        return render_template("reservas.html", reservas=get_reservas())
+    
+    filtered_reservas = filter_reservas(request)
+    return render_template("reservas.html", reservas=filtered_reservas)
 
 
 @app.route("/reservas/<id>")
@@ -62,6 +66,7 @@ def detalhes_reserva(id):
 def cancelar_reserva(id):
     handle_cancelar_reserva(id)
     return redirect(url_for("reservas"))
+
 
 @app.route("/salas")
 def salas():
