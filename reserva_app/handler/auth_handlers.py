@@ -1,10 +1,19 @@
 import bcrypt
 import re
-
+from flask import session
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.error import Error
 from reserva_app.domain.constants import PASSWORD_MIN_LENGHT
 from reserva_app.repository.repository import usuarioRepositoy
+
+def get_user_cookie():
+    return session["auth_user"]
+
+def set_user_cookie(id):
+    session["auth_user"] = id
+
+def pop_user_cookie():
+    session.pop("auth_user")
 
 def handle_login(request):
     email = request.form["email"]
@@ -12,24 +21,26 @@ def handle_login(request):
 
     inputs = { "email": email, "senha": senha }
 
-    errors = validate_login(inputs)
+    usuario = usuarioRepositoy.find_by_email(email)
 
+    errors = validate_login(inputs, usuario)
     if errors:
         return errors, inputs
+    
+    set_user_cookie(usuario.id)
 
     return None, None
 
-def validate_login(inputs):
+def validate_login(inputs, usuario):
     email = inputs["email"]
     senha = inputs["senha"]
 
     if not email or not senha:
-        return [Error.BlankCredentials]
+        return [Error.BlankFields]
     
     if not is_email_valid(email):
         return [Error.InvalidEmail]
 
-    usuario = usuarioRepositoy.find_by_email(email)
     if not usuario or not check(senha, usuario.senha):
         return [Error.BadCredentials]
 
@@ -51,7 +62,9 @@ def handle_cadastro(request):
 
     usuario = Usuario(nome, email, senha)
 
-    usuarioRepositoy.save(usuario)
+    user_id = usuarioRepositoy.save(usuario)
+
+    set_user_cookie(user_id)
 
     return None, None
 
@@ -63,7 +76,7 @@ def validate_cadastro(inputs):
     errors = []
 
     if not nome or not email or not senha:
-        return [Error.BlankCredentials]
+        return [Error.BlankFields]
 
     if re.match(r".*[^a-zA-Z0-9].*", nome):
         errors.append(Error.NameSpecialCharacters)
