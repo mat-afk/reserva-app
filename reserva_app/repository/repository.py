@@ -3,7 +3,7 @@ from pathlib import Path
 
 class Repository:
 
-    DATABASE_PATH = Path(__file__).resolve().parents[2] / "database"
+    DATABASE_PATH = Path("database/")
     ID_OFFSET = 1
 
     def __init__(self, source_path: str):
