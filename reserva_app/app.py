@@ -49,6 +49,10 @@ def cadastro():
 
 @app.route("/logout", methods=["POST"])
 def logout():
+    response = login_required()
+    if response:
+        return response
+    
     pop_user_cookie()
     return redirect("/")
 
@@ -68,12 +72,20 @@ def reservas():
 
 @app.route("/reservas/<id>")
 def detalhes_reserva(id):
+    response = login_required()
+    if response:
+        return response
+    
     reserva = get_reserva_by_id(id)
     return render_template("reserva/detalhes-reserva.html", reserva=reserva)
 
 
 @app.route("/reservas/<id>/cancelar", methods=["POST"])
 def cancelar_reserva(id):
+    response = login_required()
+    if response:
+        return response
+    
     handle_cancelar_reserva(id)
     return redirect(url_for("reservas"))
 
@@ -127,11 +139,19 @@ def cadastrar_sala():
 
 @app.route("/salas/<id>/desativar", methods=["POST"])
 def desativar_sala(id):
+    response = login_required()
+    if response:
+        return response
+
     handle_desativar_sala(int(id))
     return redirect(url_for("salas"))
 
 
 @app.route("/salas/<id>/excluir", methods=["POST"])
 def excluir_sala(id):
+    response = login_required()
+    if response:
+        return response
+    
     handle_excluir_sala(int(id))
     return redirect(url_for("salas"))
