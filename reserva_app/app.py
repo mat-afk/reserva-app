@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from reserva_app.handler.auth_handlers import handle_login, handle_cadastro, get_user_cookie, pop_user_cookie
-from reserva_app.handler.sala_handlers import *
-from reserva_app.handler.reserva_handlers import get_reservas
+from reserva_app.handler.handlers import *
 
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = "secret_key"

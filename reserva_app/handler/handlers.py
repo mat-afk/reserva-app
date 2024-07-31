@@ -14,6 +14,9 @@ def get_sala_types():
 def get_sala_types_values():
     return [item.value for item in SalaType]
 
+def get_reservas():
+    return reservaRepository.find_all()
+
 def handle_reservar_sala(request):
     sala_id = request.form["sala"]
     inicio = request.form["inicio"]
