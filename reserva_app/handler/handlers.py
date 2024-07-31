@@ -25,10 +25,10 @@ def get_reserva_by_id(id):
     return reservaRepository.find_by_id(int(id))
 
 def filter_reservas(request):
-    id = request.args.get("id")
-    sala_id = request.args.get("sala")
+    id = request.args.get("id", type = int)
+    sala_id = request.args.get("sala", type = int)
     data = request.args.get("data")
-    ativa = request.args.get("ativa")
+    ativa = request.args.get("ativa", type = bool)
 
     reservas: list[Reserva] = get_reservas()
 
@@ -38,10 +38,10 @@ def filter_reservas(request):
     filtered_reservas = []
 
     for reserva in reservas:
-        if id and reserva.id != int(id):
+        if id and reserva.id != id:
             continue
 
-        if sala_id and reserva.sala.id != int(sala_id):
+        if sala_id and reserva.sala.id != sala_id:
             continue
 
         if data:
@@ -50,8 +50,7 @@ def filter_reservas(request):
                 continue
 
         if ativa:
-            is_ativa = ativa.lower() in ("true", "yes", "y", "sim", "s")
-            if reserva.ativa != is_ativa:
+            if reserva.ativa != ativa:
                 continue
 
         filtered_reservas.append(reserva)
