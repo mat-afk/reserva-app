@@ -64,7 +64,7 @@ def reservas():
         return response
     
     if not request.args:
-        return render_template("reservas.html", reservas=get_reservas())
+        return render_template("reservas.html", reservas=get_reservas_for_today())
     
     filtered_reservas = filter_reservas(request)
     return render_template("reservas.html", reservas=filtered_reservas)

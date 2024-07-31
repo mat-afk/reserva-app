@@ -21,6 +21,9 @@ def get_sala_types_values():
 def get_reservas():
     return reservaRepository.find_all()
 
+def get_reservas_for_today():
+    return [reserva for reserva in get_reservas() if reserva.inicio.date() == datetime.today().date()]
+
 def get_reserva_by_id(id):
     return reservaRepository.find_by_id(int(id))
 
@@ -30,10 +33,10 @@ def filter_reservas(request):
     data = request.args.get("data")
     ativa = request.args.get("ativa", type = bool)
 
-    reservas: list[Reserva] = get_reservas()
-
     if not id and not sala_id and not data and not ativa:
-        return reservas
+        return get_reservas_for_today()
+    
+    reservas: list[Reserva] = get_reservas()
     
     filtered_reservas = []
 
