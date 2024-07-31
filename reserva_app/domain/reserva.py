@@ -1,14 +1,16 @@
 from datetime import datetime
 from reserva_app.domain.model import Model
+from reserva_app.domain.usuario import Usuario
+from reserva_app.domain.sala import Sala
 
 class Reserva(Model):
-    def __init__(self, usuario_id: int, sala_id: int, inicio: datetime, fim: datetime, id: int = None, ativo: bool = True):
+    def __init__(self, sala: Sala, usuario: Usuario, inicio: datetime, fim: datetime, id: int = None, ativa: bool = True):
         self.id = id
-        self.usuario_id = usuario_id
-        self.sala_id = sala_id
+        self.sala = sala
+        self.usuario = usuario
         self.inicio = inicio
         self.fim = fim
-        self.ativo = ativo
+        self.ativa = ativa
 
     def to_row(self):
-        return f"{self.id},{self.usuario_id},{self.sala_id},{self.inicio},{self.fim},{self.ativo}\n"
+        return f"{self.id},{self.sala.id},{self.usuario.id},{self.inicio},{self.fim},{self.ativa}\n"

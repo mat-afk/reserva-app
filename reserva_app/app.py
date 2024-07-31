@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request
 from reserva_app.handler.auth_handlers import handle_login, handle_cadastro
-from reserva_app.handler.sala_handlers import get_salas, get_sala_types, handle_cadastrar_sala, handle_desativar_sala, handle_excluir_sala
+from reserva_app.handler.sala_handlers import *
 
 app = Flask(__name__, template_folder="../templates")
+app.secret_key = "secret_key"
 
-loggedIn = False
+loggedIn = True
 
 @app.route("/")
 def index():
@@ -57,9 +58,20 @@ def salas():
     return render_template("listar-salas.html", salas=get_salas())
 
 
-@app.route("/salas/reservar")
+@app.route("/salas/reservar", methods=["GET", "POST"])
 def reservar_sala():
-    return render_template("reservar-sala.html")
+    salas = get_salas()
+
+    if request.method == "GET":
+        return render_template("reservar-sala.html", salas=salas, inputs={})
+    
+    if request.method == "POST":
+        errors, inputs = handle_reservar_sala(request)
+
+        if errors:
+            return render_template("reservar-sala.html", salas=salas, inputs=inputs, errors=errors)
+
+        return redirect(url_for("reservas"))
 
 
 @app.route("/salas/cadastrar", methods=["GET", "POST"])
