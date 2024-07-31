@@ -1,16 +1,14 @@
 from flask import Flask, render_template, redirect, url_for, request
-from reserva_app.handler.auth_handlers import handle_login, handle_cadastro
+from reserva_app.handler.auth_handlers import handle_login, handle_cadastro, get_user_cookie, pop_user_cookie
 from reserva_app.handler.sala_handlers import *
 from reserva_app.handler.reserva_handlers import get_reservas
 
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = "secret_key"
 
-loggedIn = True
-
 @app.route("/")
 def index():
-    if not loggedIn:
+    if not get_user_cookie():
         return redirect(url_for("login"))
         
     return redirect(url_for("reservas"))
@@ -42,6 +40,12 @@ def cadastro():
             return render_template("cadastro.html", errors=errors, inputs=inputs)
 
         return redirect(url_for("reservas"))
+    
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    pop_user_cookie()
+    return redirect("/")
 
 
 @app.route("/reservas")

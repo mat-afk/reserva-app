@@ -7,7 +7,7 @@ from reserva_app.domain.constants import PASSWORD_MIN_LENGHT
 from reserva_app.repository.repository import usuarioRepositoy
 
 def get_user_cookie():
-    return session["auth_user"]
+    return session.get("auth_user")
 
 def set_user_cookie(id):
     session["auth_user"] = id
