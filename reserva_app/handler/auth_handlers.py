@@ -4,7 +4,7 @@ from flask import session
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.error import Error
 from reserva_app.domain.constants import PASSWORD_MIN_LENGHT
-from reserva_app.repository.repository import usuarioRepositoy
+from reserva_app.repository.implementations import usuarioRepositoy
 
 def get_user_cookie():
     return session.get("auth_user")

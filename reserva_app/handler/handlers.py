@@ -2,7 +2,7 @@ from datetime import datetime
 from reserva_app.domain.reserva import Reserva
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.error import Error
-from reserva_app.repository.repository import salaRepository, reservaRepository, usuarioRepositoy
+from reserva_app.repository.implementations import salaRepository, reservaRepository, usuarioRepositoy
 from reserva_app.handler.auth_handlers import get_user_cookie
 
 def get_salas():
