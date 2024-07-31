@@ -1,6 +1,8 @@
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
+from reserva_app.domain.reserva import Reserva
 from reserva_app.domain.model import Model
+from datetime import datetime
 from pathlib import Path
 
 class Repository:
@@ -148,8 +150,33 @@ class SalaRepository(Repository):
         ativa = self.str_to_bool(ativa)
         
         return Sala(capacidade, tipo, descricao, id=id, ativa=ativa)
+    
+
+class ReservaRepository(Repository):
+
+    FILE_NAME = "reservas.csv"
+
+    def __init__(self):
+        super().__init__(self.FILE_NAME)
+
+    def find_by_sala(self, sala_id: int) -> list[Model]:
+        return [model for model in self.find_all() if model.sala.id == sala_id]
+
+    def convert_to_model(self, row: str) -> Model:
+        id, sala_id, usuario_id, inicio, fim, ativa = row.strip().split(",")
+
+        id = int(id)
+        sala = salaRepository.find_by_id(int(sala_id))
+        usuario = usuarioRepositoy.find_by_id(int(usuario_id))
+        inicio = datetime.strptime(inicio, "%Y-%m-%d %H:%M:%S")
+        fim = datetime.strptime(fim, "%Y-%m-%d %H:%M:%S")
+        ativa = self.str_to_bool(ativa)
+        
+        return Reserva(sala, usuario, inicio, fim, id=id, ativa=ativa)
 
 
 usuarioRepositoy = UsuarioRepository()
 
 salaRepository = SalaRepository()
+
+reservaRepository = ReservaRepository()
