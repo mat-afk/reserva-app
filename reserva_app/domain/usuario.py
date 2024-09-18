@@ -11,3 +11,6 @@ class Usuario(Model):
 
     def to_row(self):
         return f"{self.id},{self.nome},{self.email},{self.senha},{self.ativo},{self.admin}\n"
+
+    def __str__(self):
+        return f"{self.id},{self.nome},{self.email},{self.senha},{self.ativo},{self.admin}\n"

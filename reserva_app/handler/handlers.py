@@ -83,8 +83,8 @@ def handle_reservar_sala(request):
         return errors, inputs
 
     user_id = get_user_cookie()
-    usuario = usuarioRepositoy.find_by_id(user_id)
-    sala = salaRepository.find_by_id(sala_id)
+    usuario = usuarioRepositoy.find_by_id(int(user_id))
+    sala = salaRepository.find_by_id(int(sala_id))
     
     reserva = Reserva(sala, usuario, inicio, fim)
 

@@ -1,4 +1,5 @@
 from reserva_app.domain.model import Model
+from reserva_app.domain.search import search_by_id
 from pathlib import Path
 
 class Repository:
@@ -15,6 +16,8 @@ class Repository:
     def save(self, model: Model) -> int:
         model.id = self.new_id()
         row = model.to_row()
+
+        print(row)
         
         with open(self.file_path, "a") as file:
             file.write(row)
@@ -29,11 +32,9 @@ class Repository:
             return [self.convert_to_model(row) for row in file]
 
     def find_by_id(self, id: int) -> Model:
-        for model in self.find_all():
-            if model.id == id:
-                return model
-            
-        return None
+        models = sorted(self.find_all(), key=lambda model: model.id)
+
+        return search_by_id(models, id)
     
     def update(self, id: int, model: Model):
         if not self.file_path.exists(): return

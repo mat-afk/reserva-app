@@ -30,3 +30,6 @@ class Reserva(Model):
 
     def to_row(self):
         return f"{self.id},{self.sala.id},{self.usuario.id},{self.formatted_inicio()},{self.formatted_fim()},{self.ativa}\n"
+    
+    def __str__(self):
+        return f"{self.id},{self.sala},{self.usuario},{self.inicio},{self.fim},{self.ativa}\n"

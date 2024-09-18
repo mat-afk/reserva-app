@@ -24,3 +24,6 @@ class Sala(Model):
 
     def to_row(self):
         return f"{self.id},{self.capacidade},{self.ativa},{self.tipo.value},{self.descricao}\n"
+    
+    def __str__(self):
+        return f"{self.id},{self.capacidade},{self.ativa},{self.tipo.value},{self.descricao}\n"
