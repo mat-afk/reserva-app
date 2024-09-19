@@ -78,7 +78,7 @@ def validate_cadastro(inputs):
     if not nome or not email or not senha:
         return [Error.BlankFields]
 
-    if re.match(r".*[^a-zA-Z0-9].*", nome):
+    if not re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ]+$", nome):
         errors.append(Error.NameSpecialCharacters)
     
     if not is_email_valid(email):

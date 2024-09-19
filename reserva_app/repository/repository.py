@@ -16,8 +16,6 @@ class Repository:
     def save(self, model: Model) -> int:
         model.id = self.new_id()
         row = model.to_row()
-
-        print(row)
         
         with open(self.file_path, "a") as file:
             file.write(row)
