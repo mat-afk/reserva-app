@@ -1,0 +1,40 @@
+{% macro reservas_table(reservas) %}
+<div class="row mt-3">
+  <div class="col">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Sala</th>
+            <th scope="col">Data</th>
+            <th scope="col">Início</th>
+            <th scope="col">Fim</th>
+            <th scope="col">Ativa</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reserva in reservas %}
+          <tr>
+            <td>{{ reserva.id }}</td>
+            <td>{{ reserva.sala.id }}</td>
+            <td>{{ reserva.date() }}</td>
+            <td>{{ reserva.time_inicio() }}</td>
+            <td>{{ reserva.time_fim() }}</td>
+            <td>{% if reserva.ativa %} Sim {% else %} Não {% endif %}</td>
+            <td>
+              <form action="/reservas/{{ reserva.id }}" method="GET">
+                <button class="btn btn-sm btn-dark" type="submit">
+                  Ver detalhes
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endmacro %}

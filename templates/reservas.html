@@ -1,5 +1,8 @@
 {% extends "layout/header.html" %} 
 
+{% from "macros/form-filter.html" import form_filter with context %}
+{% from "macros/reservas-table.html" import reservas_table with context %}
+
 {% block title %}Reservas{% endblock %} 
 
 {% block main %}
@@ -9,183 +12,33 @@
       <h1>Reservas</h1>
     </div>
   </div>
-  <div class="row mt-4">
-    <form class="row" action="/reservas" method="GET">
-      <div class="col">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Id"
-          aria-label="Id"
-          id="id"
-          name="id"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Sala"
-          aria-label="Sala"
-          id="sala"
-          name="sala"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="date"
-          class="form-control"
-          placeholder="Data"
-          aria-label="Data"
-          id="data"
-          name="data"
-        />
-      </div>
-      <div class="col d-flex align-items-center gap-2">
-        <input
-          type="checkbox"
-          id="ativa"
-          name="ativa"
-          value="true"
-        />
-        <label for="ativa">Ativa</label>
-      </div>
-      <div class="col">
-        <button class="btn btn-dark" type="submit">Filtrar</button>
-      </div>
-    </form>
-  </div>
+  
+  {{ form_filter() }}
 
-  {% if not filtered_reservas %}
-    <hr>
+  {% if filtered_reservas == None %}
+
+    <hr />
     <h2>Hoje</h2>
     {% if not reservas_for_today %}
       <p class="mt-3">Nenhuma reserva encontrada.</p>
     {% else %}
-      <div class="row mt-3">
-        <div class="col">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Id</th>
-                  <th scope="col">Sala</th>
-                  <th scope="col">Data</th>
-                  <th scope="col">Início</th>
-                  <th scope="col">Fim</th>
-                  <th scope="col">Ativa</th>
-                  <th scope="col">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for reserva in reservas_for_today %}
-                <tr>
-                  <td>{{ reserva.id }}</td>
-                  <td>{{ reserva.sala.id }}</td>
-                  <td>{{ reserva.date() }}</td>
-                  <td>{{ reserva.time_inicio() }}</td>
-                  <td>{{ reserva.time_fim() }}</td>
-                  <td>{% if reserva.ativa %} Sim {% else %} Não {% endif %}</td>
-                  <td>
-                    <form action="/reservas/{{ reserva.id }}" method="GET">
-                      <button class="btn btn-sm btn-dark" type="submit">
-                        Ver detalhes
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      {{ reservas_table(reservas_for_today) }}
     {% endif %}
 
-    <hr>
-
-    <h2>Todas</h2>
+    <hr />
+    <h2>Outras</h2>
     {% if not reservas %}
       <p class="mt-3">Nenhuma reserva encontrada.</p>
     {% else %}
-      <div class="row mt-3">
-        <div class="col">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Id</th>
-                  <th scope="col">Sala</th>
-                  <th scope="col">Data</th>
-                  <th scope="col">Início</th>
-                  <th scope="col">Fim</th>
-                  <th scope="col">Ativa</th>
-                  <th scope="col">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for reserva in reservas %}
-                <tr>
-                  <td>{{ reserva.id }}</td>
-                  <td>{{ reserva.sala.id }}</td>
-                  <td>{{ reserva.date() }}</td>
-                  <td>{{ reserva.time_inicio() }}</td>
-                  <td>{{ reserva.time_fim() }}</td>
-                  <td>{% if reserva.ativa %} Sim {% else %} Não {% endif %}</td>
-                  <td>
-                    <form action="/reservas/{{ reserva.id }}" method="GET">
-                      <button class="btn btn-sm btn-dark" type="submit">
-                        Ver detalhes
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      {{ reservas_table(reservas) }}
     {% endif %}
+
   {% else %}
-    <div class="row mt-3">
-      <div class="col">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Sala</th>
-                <th scope="col">Data</th>
-                <th scope="col">Início</th>
-                <th scope="col">Fim</th>
-                <th scope="col">Ativa</th>
-                <th scope="col">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for reserva in filtered_reservas %}
-              <tr>
-                <td>{{ reserva.id }}</td>
-                <td>{{ reserva.sala.id }}</td>
-                <td>{{ reserva.date() }}</td>
-                <td>{{ reserva.time_inicio() }}</td>
-                <td>{{ reserva.time_fim() }}</td>
-                <td>{% if reserva.ativa %} Sim {% else %} Não {% endif %}</td>
-                <td>
-                  <form action="/reservas/{{ reserva.id }}" method="GET">
-                    <button class="btn btn-sm btn-dark" type="submit">
-                      Ver detalhes
-                    </button>
-                  </form>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    {% if filtered_reservas == [] %}
+      <p class="mt-3">Nenhuma reserva encontrada.</p>
+    {% else %}
+      {{ reservas_table(filtered_reservas) }}
+    {% endif %}
   {% endif %}
 </div>
 {% endblock %}

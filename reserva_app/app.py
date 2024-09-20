@@ -71,7 +71,7 @@ def reservas():
             "reservas.html", 
             reservas=all_reservas, 
             reservas_for_today=reservas_for_today, 
-            filtered_reservas=[]
+            filtered_reservas=None
         )
     
     filtered_reservas = filter_reservas(request)

@@ -34,7 +34,7 @@ def filter_reservas(request):
     ativa = request.args.get("ativa", type = bool)
 
     if not id and not sala_id and not data and not ativa:
-        return get_reservas_for_today()
+        return None
     
     reservas: list[Reserva] = get_reservas()
     

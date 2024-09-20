@@ -1,0 +1,43 @@
+{% macro form_filter() %}
+<div class="row mt-4">
+  <form class="row" action="/reservas" method="GET">
+    <div class="col">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Id"
+        aria-label="Id"
+        id="id"
+        name="id"
+      />
+    </div>
+    <div class="col">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Sala"
+        aria-label="Sala"
+        id="sala"
+        name="sala"
+      />
+    </div>
+    <div class="col">
+      <input
+        type="date"
+        class="form-control"
+        placeholder="Data"
+        aria-label="Data"
+        id="data"
+        name="data"
+      />
+    </div>
+    <div class="col d-flex align-items-center gap-2">
+      <input type="checkbox" id="ativa" name="ativa" value="true" />
+      <label for="ativa">Ativa</label>
+    </div>
+    <div class="col">
+      <button class="btn btn-dark" type="submit">Filtrar</button>
+    </div>
+  </form>
+</div>
+{% endmacro %}
