@@ -1,5 +1,5 @@
 from datetime import datetime
-from reserva_app.domain.constants import DEFAULT_DATETIME_FORMAT, DEFAULT_DATE_FORMAT
+from reserva_app.util.constants import DEFAULT_DATETIME_FORMAT, DEFAULT_DATE_FORMAT
 from reserva_app.domain.reserva import Reserva
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.error import Error

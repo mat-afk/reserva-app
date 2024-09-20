@@ -63,11 +63,24 @@ def reservas():
     if response:
         return response
     
+    all_reservas = get_reservas()
+    reservas_for_today = get_reservas_for_today()
+
     if not request.args:
-        return render_template("reservas.html", reservas=get_reservas_for_today())
+        return render_template(
+            "reservas.html", 
+            reservas=all_reservas, 
+            reservas_for_today=reservas_for_today, 
+            filtered_reservas=[]
+        )
     
     filtered_reservas = filter_reservas(request)
-    return render_template("reservas.html", reservas=filtered_reservas)
+    return render_template(
+        "reservas.html", 
+        reservas=all_reservas, 
+        reservas_for_today=reservas_for_today, 
+        filtered_reservas=filtered_reservas
+    )
 
 
 @app.route("/reservas/<id>")

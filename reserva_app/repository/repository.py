@@ -1,5 +1,5 @@
 from reserva_app.domain.model import Model
-from reserva_app.domain.search import search_by_id
+from reserva_app.util.search import search_by_id
 from pathlib import Path
 
 class Repository:

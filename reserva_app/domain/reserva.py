@@ -2,7 +2,7 @@ from datetime import datetime
 from reserva_app.domain.model import Model
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala
-from reserva_app.domain.constants import DATETIME_FORMAT, DATE_FORMAT, TIME_FORMAT
+from reserva_app.util.constants import DATETIME_FORMAT, DATE_FORMAT, TIME_FORMAT
 
 class Reserva(Model):
     def __init__(self, sala: Sala, usuario: Usuario, inicio: datetime, fim: datetime, id: int = None, ativa: bool = True):

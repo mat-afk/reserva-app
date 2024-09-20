@@ -4,7 +4,7 @@ from reserva_app.domain.model import Model
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.reserva import Reserva
-from reserva_app.domain.constants import DATETIME_FORMAT
+from reserva_app.util.constants import DATETIME_FORMAT
 
 class UsuarioRepository(Repository):
 

@@ -1,5 +1,5 @@
 from enum import Enum
-from reserva_app.domain.constants import PASSWORD_MIN_LENGHT
+from reserva_app.util.constants import PASSWORD_MIN_LENGHT
 
 class Error(Enum):
     BlankFields = "Por favor, preencha todos os campos obrigatórios."
