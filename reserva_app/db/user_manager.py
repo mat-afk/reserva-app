@@ -1,30 +1,28 @@
-from db.connection import close_con, open_con
-
 def list_user(con):
     cursor = con.cursor(dictionary = True)
-    sql = "SELECT * FROM users"
+    sql = "SELECT * FROM usuarios"
     cursor.execute(sql)
     for registro in cursor:
-        print(registro['user_id']+ "-" + registro['nome'])
+        print(registro['usuario_id']+ "-" + registro['nome'])
     cursor.close()
     
-def insert_user(con, id, nome, email, senha, ativo, adm):
-    cursor = con.cursor()
-    sql = "INSERT INTO clientes (user_id, nome, email, senha, ativo, adm) VALUES(%s, %s, %s, %s, %s)"
+def insert_user(conn, id, nome, email, senha, ativo, adm):
+    cursor = conn.cursor()
+    sql = "INSERT INTO usuarios(usuario_id, nome, email, senha, ativo, adm) VALUES(%s, %s, %s, %s, %s, %s)"
     cursor.execute(sql, (id, nome, email, senha, ativo, adm))
-    con.commit()
+    conn.commit()
     cursor.close()
 
 def remove_user(con, id):
     cursor = con.cursor()
-    sql = "REMOVE FROM clientes WHERE user_id = %s"
+    sql = "REMOVE FROM usuarios WHERE usuario_id = %s"
     cursor.execute(sql, (id))
     con.commit()
     cursor.close()
 
 def is_ativo_user(con, id, ativo):
     cursor = con.cursor()
-    sql = "UPDATE cliente SET ativo = %s WHERE user_id = %s"
+    sql = "UPDATE usuarios SET ativo = %s WHERE usuario_id = %s"
     cursor.execute(sql, (ativo, id))
     con.commit()
     cursor.close()

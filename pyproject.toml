@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 flask = "^3.0.3"
 bcrypt = "^4.2.0"
+mysql-connector-python = "^9.0.0"
 
 
 [build-system]
