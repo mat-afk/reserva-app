@@ -13,20 +13,56 @@ class SalaType(Enum):
             SalaType.SALA_AULA: "Sala de Aula"
         }[self]
 
-
 class Sala(Model):
     def __init__(self, capacidade: int, tipo: SalaType, descricao: str, id: int = None, ativa: bool = True):
-        self.id = id
-        self.capacidade = capacidade
-        self.ativa = ativa
-        self.tipo = tipo
-        self.descricao = descricao
+        self.__id = id
+        self.__capacidade = capacidade
+        self.__ativa = ativa
+        self.__tipo = tipo
+        self.__descricao = descricao
 
     def to_row(self):
-        return f"{self.id},{self.capacidade},{self.ativa},{self.tipo.value},{self.descricao}\n"
+        return f"{self.__id},{self.__capacidade},{self.__ativa},{self.__tipo.value},{self.__descricao.replace(',', ' ')}\n"
     
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, id: int):
+        self.__id = id
+
+    @property
+    def capacidade(self):
+        return self.__capacidade
+
+    @capacidade.setter
+    def capacidade(self, capacidade: int):
+        self.__capacidade = capacidade
+
+    @property
+    def ativa(self):
+        return self.__ativa
+
+    @ativa.setter
+    def ativa(self, ativa: bool):
+        self.__ativa = ativa
+
+    @property
+    def tipo(self):
+        return self.__tipo
+
+    @tipo.setter
+    def tipo(self, tipo: SalaType):
+        self.__tipo = tipo
+
+    @property
+    def descricao(self):
+        return self.__descricao
+
+    @descricao.setter
+    def descricao(self, descricao: str):
+        self.__descricao = descricao
+
     def __str__(self):
-        atts = []
-        for key, value in self.__dict__.items():
-            atts.append(f"{key}={value}")
-        return f"{__class__.__name__}: {", ".join(atts)}\n"
+        return f"Sala (id={self.__id}, capacidade={self.__capacidade}, ativa={self.__ativa}, tipo={self.__tipo}, descricao={self.__descricao})"
