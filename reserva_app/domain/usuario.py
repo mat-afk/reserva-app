@@ -13,4 +13,7 @@ class Usuario(Model):
         return f"{self.id},{self.nome},{self.email},{self.senha},{self.ativo},{self.admin}\n"
 
     def __str__(self):
-        return f"{self.id},{self.nome},{self.email},{self.senha},{self.ativo},{self.admin}\n"
+        atts = []
+        for key, value in self.__dict__.items():
+            atts.append(f"{key}={value}")
+        return f"{__class__.__name__}: {", ".join(atts)}\n"
