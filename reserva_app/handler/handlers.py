@@ -3,14 +3,14 @@ from reserva_app.util.constants import DEFAULT_DATETIME_FORMAT, DEFAULT_DATE_FOR
 from reserva_app.domain.reserva import Reserva
 from reserva_app.domain.sala import Sala, SalaType
 from reserva_app.domain.error import Error
-from reserva_app.repository.implementations import salaRepository, reservaRepository, usuarioRepositoy
+from reserva_app.dao.implementations import salaDAO, reservaDAO, usuarioDAO
 from reserva_app.handler.auth_handlers import get_user_cookie
 
 def get_salas():
-    return salaRepository.find_all()
+    return salaDAO.find_all()
 
 def get_salas_ativas():
-    return [sala for sala in get_salas() if sala.ativa]
+    return salaDAO.find_all_ativas()
 
 def get_sala_types():
     return SalaType
@@ -19,13 +19,17 @@ def get_sala_types_values():
     return [item.value for item in SalaType]
 
 def get_reservas():
-    return reservaRepository.find_all()
+    return reservaDAO.find_all()
 
 def get_reservas_for_today():
     return [reserva for reserva in get_reservas() if reserva.inicio.date() == datetime.today().date()]
 
+def get_others_reservas():
+    return [reserva for reserva in get_reservas() if reserva.inicio.date() != datetime.today().date()]
+
+
 def get_reserva_by_id(id):
-    return reservaRepository.find_by_id(int(id))
+    return reservaDAO.find_by_id(int(id))
 
 def filter_reservas(request):
     id = request.args.get("id", type = int)
@@ -83,12 +87,12 @@ def handle_reservar_sala(request):
         return errors, inputs
 
     user_id = get_user_cookie()
-    usuario = usuarioRepositoy.find_by_id(int(user_id))
-    sala = salaRepository.find_by_id(int(sala_id))
+    usuario = usuarioDAO.find_by_id(int(user_id))
+    sala = salaDAO.find_by_id(int(sala_id))
     
     reserva = Reserva(sala, usuario, inicio, fim)
 
-    reservaRepository.save(reserva)
+    reservaDAO.save(reserva)
 
     return None, None
 
@@ -116,7 +120,7 @@ def validate_reservar_sala(inputs):
     if fim.date() > inicio.date():
         return [Error.ReservaTooLong]
 
-    reservas: list[Reserva] = [reserva for reserva in reservaRepository.find_by_sala(sala_id) if reserva.ativa]
+    reservas: list[Reserva] = [reserva for reserva in reservaDAO.find_by_sala(sala_id) if reserva.ativa]
 
     for reserva in reservas:
         if reserva.inicio < fim and reserva.fim > inicio:
@@ -126,9 +130,10 @@ def validate_reservar_sala(inputs):
         
 def handle_cancelar_reserva(id):
     id = int(id)
-    reserva = reservaRepository.find_by_id(id)
+    reserva = reservaDAO.find_by_id(id)
     reserva.ativa = False
-    reservaRepository.update(id, reserva)
+    reserva.id = id
+    reservaDAO.update(reserva)
         
 def handle_cadastrar_sala(request):
     tipo = request.form["tipo"]
@@ -144,11 +149,10 @@ def handle_cadastrar_sala(request):
         return errors, inputs
     
     tipo = SalaType(int(tipo))
-    descricao = '"' + descricao + '"'
 
     sala = Sala(capacidade, tipo, descricao)
 
-    salaRepository.save(sala)
+    salaDAO.save(sala)
 
     return None, None
 
@@ -171,9 +175,10 @@ def validate_cadastrar_sala(inputs):
     return errors
 
 def handle_desativar_sala(id: int):
-    sala: Sala = salaRepository.find_by_id(id)
+    sala: Sala = salaDAO.find_by_id(id)
     sala.ativa = False
-    salaRepository.update(id, sala)
+    sala.id = id
+    salaDAO.update(sala)
 
 def handle_excluir_sala(id: int):
-    salaRepository.delete(id)
+    salaDAO.delete(id)

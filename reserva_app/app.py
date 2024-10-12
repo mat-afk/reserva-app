@@ -1,9 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, request
 from reserva_app.handler.auth_handlers import handle_login, handle_cadastro, get_user_cookie, pop_user_cookie
 from reserva_app.handler.handlers import *
+from reserva_app.db.tables import create_tables
 
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = "secret_key"
+
+create_tables()
 
 def login_required():
     if not get_user_cookie():
@@ -63,13 +66,13 @@ def reservas():
     if response:
         return response
     
-    all_reservas = get_reservas()
+    other_reservas = get_others_reservas()
     reservas_for_today = get_reservas_for_today()
 
     if not request.args:
         return render_template(
             "reservas.html", 
-            reservas=all_reservas, 
+            reservas=other_reservas, 
             reservas_for_today=reservas_for_today, 
             filtered_reservas=None
         )
@@ -77,7 +80,7 @@ def reservas():
     filtered_reservas = filter_reservas(request)
     return render_template(
         "reservas.html", 
-        reservas=all_reservas, 
+        reservas=other_reservas, 
         reservas_for_today=reservas_for_today, 
         filtered_reservas=filtered_reservas
     )

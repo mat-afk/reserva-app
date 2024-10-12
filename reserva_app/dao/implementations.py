@@ -9,14 +9,15 @@ class UsuarioDAO(DAO):
 
     TABLE_NAME = "usuarios"
 
-    def save(self, model: Usuario) -> None:
+    def save(self, model: Usuario) -> int:
         sql = f"""
-            INSERT INTO {self.TABLE_NAME} (usuario_id, nome, email, senha, ativo, admin) 
-            VALUES (%s, %s, %s, %s, %s, %s);
+            INSERT INTO {self.TABLE_NAME} (nome, email, senha, ativo, admin) 
+            VALUES (%s, %s, %s, %s, %s);
         """
-        self.execute(sql, (model.id, model.nome, model.email, model.senha, model.ativo, model.admin))
+        id = self.execute(sql, (model.nome, model.email, model.senha, model.ativo, model.admin))
+        return id
 
-    def update(self, model: Usuario) -> Usuario:
+    def update(self, model: Usuario) -> None:
 
         sql = f"""
             UPDATE {self.TABLE_NAME} 
@@ -30,11 +31,18 @@ class UsuarioDAO(DAO):
         
         models = self.query(sql, params=(id,))
         if models:
-            models.pop()
+            return models.pop()
 
     def find_all(self) -> list[Usuario]:
         sql = f"SELECT * FROM {self.TABLE_NAME};"
         return self.query(sql)
+    
+    def find_by_email(self, email: str) -> Usuario:
+        sql = f"SELECT * FROM {self.TABLE_NAME} WHERE email = %s;"
+
+        models = self.query(sql, params=(email,))
+        if models:
+            return models.pop()
 
     def delete(self, id: int) -> None:
         sql = f"DELETE FROM {self.TABLE_NAME} WHERE usuario_id = %s;"
@@ -55,32 +63,37 @@ class SalaDAO(DAO):
 
     TABLE_NAME = "salas"
 
-    def save(self, model: Sala) -> None:
+    def save(self, model: Sala) -> int:
 
         sql = f"""
-            INSERT INTO {self.TABLE_NAME} (sala_id, capacidade, ativa, tipo, descricao)
-            VALUES (%s, %s, %s, %s, %s);
+            INSERT INTO {self.TABLE_NAME} (capacidade, ativa, tipo, descricao)
+            VALUES (%s, %s, %s, %s);
         """
-        self.execute(sql, (model.id, model.capacidade, model.ativa, model.tipo, model.descricao))
+        id = self.execute(sql, (model.capacidade, model.ativa, model.tipo.value, model.descricao))
+        return id
 
-    def update(self, model: Sala) -> Sala:
+    def update(self, model: Sala) -> None:
 
         sql = f"""
             UPDATE {self.TABLE_NAME} 
             SET capacidade = %s, ativa = %s, tipo = %s, descricao = %s
             WHERE sala_id = %s;
         """
-        self.execute(sql, (model.capacidade, model.ativa, model.tipo, model.descricao, model.id))
+        self.execute(sql, (model.capacidade, model.ativa, model.tipo.value, model.descricao, model.id))
 
     def find_by_id(self, id: int) -> Sala: 
         sql = f"SELECT * FROM {self.TABLE_NAME} WHERE sala_id = %s;"
 
         models = self.query(sql, params=(id,))
         if models:
-            models.pop()
+            return models.pop()
 
     def find_all(self) -> list[Sala]:
         sql = f"SELECT * FROM {self.TABLE_NAME};"
+        return self.query(sql)
+    
+    def find_all_ativas(self):
+        sql = f"SELECT * FROM {self.TABLE_NAME} WHERE ativa = true;"
         return self.query(sql)
 
     def delete(self, id: int) -> None:
@@ -104,30 +117,35 @@ class ReservaDAO(DAO):
     def save(self, model: Reserva) -> None:
 
         sql = f"""
-            INSERT INTO {self.TABLE_NAME} (reserva_id, sala_id, usuario_id, inicio, fim, ativa)
-            VALUES (%s, %s, %s, %s, %s, %s);
+            INSERT INTO {self.TABLE_NAME} (sala_id, usuario_id, inicio, fim, ativa)
+            VALUES (%s, %s, %s, %s, %s);
         """
-        self.execute(sql, (model.id, model.sala.id, model.usuario.id, model.inicio, model.fim))
+        id = self.execute(sql, (model.sala.id, model.usuario.id, model.inicio, model.fim, model.ativa))
+        return id
 
-    def update(self, model: Reserva) -> Reserva:
+    def update(self, model: Reserva) -> None:
 
         sql = f"""
             UPDATE {self.TABLE_NAME} 
             SET sala_id = %s, usuario_id = %s, inicio = %s, fim = %s, ativa = %s
             WHERE reserva_id = %s;
         """
-        self.execute(sql, (model.sala.id, model.usuario.id, model.inicio, model.fim, model.id))
+        self.execute(sql, (model.sala.id, model.usuario.id, model.inicio, model.fim, model.ativa, model.id))
 
     def find_by_id(self, id: int) -> Reserva: 
         sql = f"SELECT * FROM {self.TABLE_NAME} WHERE reserva_id = %s;"
 
         models = self.query(sql, params=(id,))
         if models:
-            models.pop()
+            return models.pop()
 
     def find_all(self) -> list[Reserva]:
         sql = f"SELECT * FROM {self.TABLE_NAME};"
         return self.query(sql)
+    
+    def find_by_sala(self, sala_id) -> list[Reserva]:
+        sql = f"SELECT * FROM {self.TABLE_NAME} WHERE sala_id = %s;"
+        return self.query(sql, params=(sala_id,))
 
     def delete(self, id: int) -> None:
         sql = f"DELETE FROM {self.TABLE_NAME} WHERE reserva_id = %s;"
@@ -138,8 +156,8 @@ class ReservaDAO(DAO):
             id=result["reserva_id"],
             sala=salaDAO.find_by_id(int(result["sala_id"])),
             usuario=usuarioDAO.find_by_id(int(result["usuario_id"])),
-            inicio=datetime(result["inicio"]),
-            fim=datetime(result["fim"]),
+            inicio=result["inicio"],
+            fim=result["fim"],
             ativa=result["ativa"],
         )
     
@@ -147,5 +165,3 @@ class ReservaDAO(DAO):
 usuarioDAO = UsuarioDAO()
 salaDAO = SalaDAO()
 reservaDAO = ReservaDAO()
-
-print(reservaDAO.find_all())

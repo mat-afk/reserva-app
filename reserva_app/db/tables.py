@@ -14,7 +14,7 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS usuarios(
             usuario_id INT PRIMARY KEY AUTO_INCREMENT,
             nome VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL UNIQUE,
             senha VARCHAR(255) NOT NULL,
             ativo BOOLEAN NOT NULL,
             admin BOOLEAN NOT NULL
@@ -37,7 +37,7 @@ def create_tables():
             ativa BOOLEAN NOT NULL,
 
             FOREIGN KEY (sala_id) REFERENCES salas(sala_id),
-            FOREIGN KEY (usuario_id) REFERENCES usuarios(usuario_id),
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(usuario_id)
         );
     '''
 

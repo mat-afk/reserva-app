@@ -4,7 +4,7 @@ from flask import session
 from reserva_app.domain.usuario import Usuario
 from reserva_app.domain.error import Error
 from reserva_app.util.constants import PASSWORD_MIN_LENGHT
-from reserva_app.repository.implementations import usuarioRepositoy
+from reserva_app.dao.implementations import usuarioDAO
 
 def get_user_cookie():
     return session.get("auth_user")
@@ -21,7 +21,7 @@ def handle_login(request):
 
     inputs = { "email": email, "senha": senha }
 
-    usuario = usuarioRepositoy.find_by_email(email)
+    usuario = usuarioDAO.find_by_email(email)
 
     errors = validate_login(inputs, usuario)
     if errors:
@@ -62,7 +62,7 @@ def handle_cadastro(request):
 
     usuario = Usuario(nome, email, senha)
 
-    user_id = usuarioRepositoy.save(usuario)
+    user_id = usuarioDAO.save(usuario)
 
     set_user_cookie(user_id)
 
@@ -87,7 +87,7 @@ def validate_cadastro(inputs):
     if len(senha) < PASSWORD_MIN_LENGHT:
         errors.append(Error.PasswordMinimumLength)
 
-    if usuarioRepositoy.find_by_email(email):
+    if usuarioDAO.find_by_email(email):
         errors.append(Error.UnavailableEmail)
 
     return errors
