@@ -143,6 +143,10 @@ class ReservaDAO(DAO):
         sql = f"SELECT * FROM {self.TABLE_NAME};"
         return self.query(sql)
     
+    def find_all_ativas(self) -> list[Reserva]:
+        sql = f"SELECT * FROM {self.TABLE_NAME} WHERE ativa = true;"
+        return self.query(sql)
+    
     def find_by_sala(self, sala_id) -> list[Reserva]:
         sql = f"SELECT * FROM {self.TABLE_NAME} WHERE sala_id = %s;"
         return self.query(sql, params=(sala_id,))

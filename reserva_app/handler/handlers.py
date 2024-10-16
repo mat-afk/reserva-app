@@ -21,12 +21,14 @@ def get_sala_types_values():
 def get_reservas():
     return reservaDAO.find_all()
 
+def get_reservas_ativas():
+    return reservaDAO.find_all_ativas()
+
 def get_reservas_for_today():
-    return [reserva for reserva in get_reservas() if reserva.inicio.date() == datetime.today().date()]
+    return [reserva for reserva in get_reservas_ativas() if reserva.inicio.date() == datetime.today().date()]
 
 def get_others_reservas():
-    return [reserva for reserva in get_reservas() if reserva.inicio.date() != datetime.today().date()]
-
+    return [reserva for reserva in get_reservas_ativas() if reserva.inicio.date() != datetime.today().date()]
 
 def get_reserva_by_id(id):
     return reservaDAO.find_by_id(int(id))
